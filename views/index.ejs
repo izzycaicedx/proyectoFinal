@@ -1,19 +1,40 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MoodTunes</title>
-    <link rel="stylesheet" href="/style.css">
+    <%- include('partials/head', { pageTitle: 'Descubre música' }) %>
 </head>
 <body>
-
-    <h1>MoodTunes</h1>
-
-    <form action="/buscar" method="GET">
-        <input type="text" name="mood" placeholder="¿Qué quieres escuchar?" required>
-        <button type="submit">Buscar</button>
-    </form>
-
+    <div class="app-shell">
+        <%- include('partials/nav', { activeNav: 'home' }) %>
+        <div class="main-content">
+            <header class="top-bar">
+                <button type="button" class="mobile-nav-btn" aria-label="Menú">☰</button>
+                <span></span>
+            </header>
+            <main class="page-body">
+                <section class="hero">
+                    <span class="hero-badge">Powered by Deezer</span>
+                    <h1>Encuentra tu sonido</h1>
+                    <p>Busca por estado de ánimo, artista o género. Guarda tus favoritos y arma tu playlist.</p>
+                    <form action="/buscar" method="GET" class="search-form">
+                        <div class="search-wrap">
+                            <input type="text" name="mood" placeholder="¿Qué quieres escuchar hoy?" required autocomplete="off">
+                            <span class="search-icon" aria-hidden="true">🔍</span>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Buscar</button>
+                    </form>
+                    <div class="mood-chips">
+                        <button type="button" class="mood-chip" data-mood="feliz">😊 Feliz</button>
+                        <button type="button" class="mood-chip" data-mood="relax">🌙 Relax</button>
+                        <button type="button" class="mood-chip" data-mood="rock">🎸 Rock</button>
+                        <button type="button" class="mood-chip" data-mood="reggaeton">🔥 Reggaeton</button>
+                        <button type="button" class="mood-chip" data-mood="electronic">⚡ Electronic</button>
+                        <button type="button" class="mood-chip" data-mood="sad">💙 Melancólico</button>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+    <%- include('partials/layout-end') %>
 </body>
 </html>

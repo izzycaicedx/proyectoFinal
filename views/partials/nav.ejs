@@ -1,0 +1,20 @@
+<aside class="sidebar">
+    <a href="/" class="logo">
+        <span class="logo-icon">♪</span>
+        <span>MoodTunes</span>
+    </a>
+    <nav>
+        <ul class="nav-links">
+            <li>
+                <a href="/" class="<%= typeof activeNav === 'undefined' || activeNav === 'home' ? 'active' : '' %>">
+                    <span class="nav-icon">⌂</span> Inicio
+                </a>
+            </li>
+            <li>
+                <a href="/ver-playlist" class="<%= typeof activeNav !== 'undefined' && activeNav === 'playlist' ? 'active' : '' %>">
+                    <span class="nav-icon">♥</span> Mis playlists
+                </a>
+            </li>
+        </ul>
+    </nav>
+</aside>
