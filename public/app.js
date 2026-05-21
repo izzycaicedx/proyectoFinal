@@ -1,6 +1,26 @@
+/**
+ * @file app.js
+ * @description Orquestación de la UI de MoodTunes (punto de entrada del cliente).
+ *
+ * Dependencias (orden en layout-end.ejs):
+ * 1. playlists.js  → PlaylistStore
+ * 2. notify.js     → MoodNotify
+ * 3. player-controller.js → GlobalPlayer
+ * 4. app.js        → este archivo
+ *
+ * Módulos internos:
+ * - Navegación móvil (sidebar + backdrop)
+ * - PlaylistModal (crear playlist con emoji)
+ * - Guardado de pistas en resultados
+ * - Render dinámico de /ver-playlist
+ *
+ * @listens moodtunes:notify
+ * @listens moodtunes:playlists-updated
+ */
 (function () {
   "use strict";
 
+  // ——— Navegación lateral (móvil) ———
   const sidebar = document.getElementById("sidebar");
   const backdrop = document.getElementById("sidebar-backdrop");
   const navBtn = document.querySelector(".mobile-nav-btn");
@@ -40,6 +60,7 @@
 
   document.body.classList.add("has-mobile-nav");
 
+  // ——— Búsqueda: chips de mood ———
   document.querySelectorAll(".mood-chip").forEach((chip) => {
     chip.addEventListener("click", () => {
       const input = document.querySelector('input[name="mood"]');
@@ -50,6 +71,12 @@
     });
   });
 
+  // ——— Feedback visual ———
+
+  /**
+   * Toast inferior (respaldo de MoodNotify).
+   * @param {string} message
+   */
   function showToast(message) {
     const toast = document.getElementById("toast");
     if (!toast) return;
@@ -58,6 +85,11 @@
     setTimeout(() => toast.classList.remove("show"), 3200);
   }
 
+  /**
+   * Notificación del sistema + toast vía moodtunes:notify.
+   * @param {string} title
+   * @param {string} body
+   */
   function notifyUser(title, body) {
     MoodNotify.showWithPermission(title, body);
   }
@@ -66,6 +98,12 @@
     if (e.detail?.body) showToast(e.detail.body);
   });
 
+  // ——— Modal crear playlist ———
+
+  /**
+   * Formulario modal: nombre, descripción, emoji.
+   * @namespace PlaylistModal
+   */
   const PlaylistModal = {
     modal: null,
     form: null,
@@ -158,6 +196,12 @@
     },
   };
 
+  // ——— Utilidades ———
+
+  /**
+   * @param {Element} el - Elemento con `data-track`
+   * @returns {Object|null}
+   */
   function parseTrack(el) {
     const raw = el?.getAttribute("data-track");
     if (!raw) return null;
@@ -168,12 +212,21 @@
     }
   }
 
+  /**
+   * Escapa texto para inyección segura en innerHTML.
+   * @param {string} s
+   * @returns {string}
+   */
   function escapeHtml(s) {
     const d = document.createElement("div");
     d.textContent = s;
     return d.innerHTML;
   }
 
+  /**
+   * Exige al menos una playlist; si no hay, abre modal y notifica.
+   * @param {Function} [onReady] - Callback tras tener playlist (p. ej. guardar)
+   */
   function requirePlaylistBeforeSave(onReady) {
     if (PlaylistStore.hasPlaylists()) {
       if (onReady) onReady();
@@ -190,6 +243,9 @@
     });
   }
 
+  // ——— Guardar canciones (resultados) ———
+
+  /** Enlaza `.btn-save` con PlaylistStore y validación previa */
   function initSaveButtons() {
     document.querySelectorAll(".btn-save").forEach((btn) => {
       const track = parseTrack(btn);
@@ -241,6 +297,7 @@
     });
   }
 
+  /** Construye selector «Guardar en» o aviso de crear playlist */
   function buildPlaylistSelect() {
     const wrap = document.getElementById("save-playlist-picker");
     if (!wrap) return;
@@ -285,6 +342,10 @@
     });
   }
 
+  /**
+   * Renderiza `#playlists-app` (página /ver-playlist) desde sessionStorage.
+   * Dispara `moodtunes:dom-updated` para re-enlazar reproductores.
+   */
   function renderPlaylistsPage() {
     const root = document.getElementById("playlists-app");
     if (!root) return;
@@ -453,6 +514,7 @@
     GlobalPlayer.initInlinePlayers();
   }
 
+  // ——— Arranque ———
   PlaylistModal.init();
   GlobalPlayer.init();
   initSaveButtons();
@@ -467,6 +529,7 @@
 
   renderPlaylistsPage();
 
+  // Solicitar permiso de notificaciones en la primera interacción
   document.body.addEventListener(
     "click",
     () => {

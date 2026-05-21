@@ -1,16 +1,29 @@
 /**
- * Notificaciones nativas del sistema (Notification API)
+ * @file notify.js
+ * @description Wrapper de la Notification API del navegador.
+ * Siempre emite `moodtunes:notify` para que la UI muestre un toast de respaldo.
+ *
+ * @namespace MoodNotify
  */
 (function (global) {
   "use strict";
 
   const MoodNotify = {
+    /** @type {boolean} */
     supported: "Notification" in global,
 
+    /**
+     * Permiso actual: 'default' | 'granted' | 'denied'
+     * @returns {string}
+     */
     get permission() {
       return this.supported ? Notification.permission : "denied";
     },
 
+    /**
+     * Solicita permiso al usuario (solo si aún está en 'default').
+     * @returns {Promise<string>}
+     */
     async requestPermission() {
       if (!this.supported) return "denied";
       if (Notification.permission === "granted") return "granted";
@@ -22,6 +35,12 @@
       }
     },
 
+    /**
+     * Muestra notificación nativa (si hay permiso) y dispara evento de toast.
+     * @param {string} title
+     * @param {string} [body]
+     * @param {NotificationOptions & { duration?: number, onClick?: Function }} [options]
+     */
     show(title, body, options) {
       const opts = {
         body: body || "",
@@ -42,7 +61,7 @@
           };
           setTimeout(() => n.close(), options?.duration || 6000);
         } catch (e) {
-          console.warn("Notification error:", e);
+          console.warn("[MoodNotify]", e);
         }
       }
 
@@ -53,6 +72,12 @@
       );
     },
 
+    /**
+     * Pide permiso si hace falta y luego muestra la notificación.
+     * @param {string} title
+     * @param {string} [body]
+     * @param {Object} [options]
+     */
     async showWithPermission(title, body, options) {
       if (this.permission !== "granted") {
         await this.requestPermission();

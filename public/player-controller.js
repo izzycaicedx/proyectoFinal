@@ -1,11 +1,39 @@
 /**
- * Reproductor unificado: barra global + mini players en cards (misma lógica)
+ * @file player-controller.js
+ * @description Reproductor de audio unificado (patrón single source of truth).
+ *
+ * - Un único elemento `<audio id="global-audio">` reproduce el audio.
+ * - Los `[data-player]` en cards son controles espejo (play, seek, tiempos).
+ * - `toggleTrack()` aplica la misma lógica en barra inferior y mini players.
+ *
+ * @fires moodtunes:player-play
+ * @fires moodtunes:player-pause
+ * @fires moodtunes:player-volume
+ *
+ * Escucha:
+ * @listens moodtunes:dom-updated - Re-enlaza mini players tras render dinámico
+ *
+ * @typedef {Object} TrackPayload
+ * @property {number} id
+ * @property {string} title
+ * @property {string} artist
+ * @property {string} [cover]
+ * @property {string} preview
+ * @property {number} [duration]
+ *
+ * @namespace GlobalPlayer
  */
 (function (global) {
   "use strict";
 
+  /** @type {string} Clave sessionStorage para volumen, pista y posición */
   const PLAYER_STATE_KEY = "moodtunes_player";
 
+  /**
+   * Formatea segundos a m:ss
+   * @param {number} sec
+   * @returns {string}
+   */
   function formatTime(sec) {
     if (!isFinite(sec) || sec < 0) return "0:00";
     const m = Math.floor(sec / 60);
@@ -13,6 +41,7 @@
     return m + ":" + String(s).padStart(2, "0");
   }
 
+  /** @returns {Object} */
   function loadPlayerState() {
     try {
       return JSON.parse(sessionStorage.getItem(PLAYER_STATE_KEY) || "{}");
@@ -21,18 +50,25 @@
     }
   }
 
+  /** @param {Object} patch */
   function savePlayerState(patch) {
     const prev = loadPlayerState();
     sessionStorage.setItem(PLAYER_STATE_KEY, JSON.stringify({ ...prev, ...patch }));
   }
 
   const GlobalPlayer = {
+    /** @type {HTMLAudioElement|null} */
     audio: null,
+    /** @type {HTMLElement|null} */
     bar: null,
+    /** @type {TrackPayload|null} */
     currentTrack: null,
+    /** @type {HTMLElement|null} */
     activeInlineEl: null,
+    /** @type {number} 0–1 */
     volume: 0.8,
 
+    /** Inicializa controles, restaura sesión y enlaza mini players */
     init() {
       this.bar = document.getElementById("global-player");
       this.audio = document.getElementById("global-audio");
@@ -62,6 +98,11 @@
       );
     },
 
+    /**
+     * Lee JSON desde atributo `data-track` (URI-encoded).
+     * @param {Element} el
+     * @returns {TrackPayload|null}
+     */
     parseTrack(el) {
       const raw = el?.getAttribute("data-track");
       if (!raw) return null;
@@ -98,7 +139,9 @@
       };
     },
 
-    /** Actualiza progreso en barra global y en el inline activo */
+    /**
+     * Sincroniza barra de progreso, tiempos y buffer en global + inline activo.
+     */
     syncAllProgress() {
       if (!this.audio || !this.currentTrack) return;
 
@@ -154,6 +197,7 @@
       });
     },
 
+    /** Actualiza clases `is-playing`, visibilidad de barra y aria-labels */
     syncPlayingState() {
       const playing = !!(this.currentTrack && this.audio && !this.audio.paused);
 
@@ -188,6 +232,10 @@
       });
     },
 
+    /**
+     * Busca en la pista por porcentaje (0–100).
+     * @param {number} pct
+     */
     seekToPercent(pct) {
       if (!this.audio?.duration) return;
       const p = Math.max(0, Math.min(100, pct));
@@ -196,7 +244,11 @@
       this.persistState();
     },
 
-    /** Misma lógica para barra abajo y mini players */
+    /**
+     * Play / pause / cambio de pista (misma lógica en barra y cards).
+     * @param {TrackPayload} track
+     * @param {HTMLElement} [inlineEl]
+     */
     toggleTrack(track, inlineEl) {
       if (!track?.preview || !this.audio) return;
 
@@ -212,6 +264,11 @@
       this.loadAndPlay(track, inlineEl);
     },
 
+    /**
+     * Carga nueva fuente de audio y reproduce.
+     * @param {TrackPayload} track
+     * @param {HTMLElement} [inlineEl]
+     */
     loadAndPlay(track, inlineEl) {
       this.currentTrack = track;
       this.activeInlineEl = inlineEl || null;
@@ -312,6 +369,10 @@
       }
     },
 
+    /**
+     * Enlaza eventos de un mini player (idempotente vía data-player-bound).
+     * @param {HTMLElement} el
+     */
     bindInlinePlayer(el) {
       if (el.dataset.playerBound === "1") return;
       el.dataset.playerBound = "1";
@@ -352,6 +413,7 @@
       });
     },
 
+    /** Enlaza todos los `[data-player]` presentes en el DOM */
     initInlinePlayers() {
       this.getInlineEls().forEach((el) => this.bindInlinePlayer(el));
       this.syncPlayingState();
@@ -374,6 +436,7 @@
       this.emit("volume");
     },
 
+    /** Delegación: overlay de portada en song-card */
     onDocumentClick(e) {
       if (
         e.target.closest(
@@ -482,6 +545,9 @@
     },
   };
 
+  /**
+   * Alias usado por listeners de audio; mantiene compatibilidad con app.js.
+   */
   function syncInlineProgressGlobal() {
     GlobalPlayer.syncAllProgress();
   }

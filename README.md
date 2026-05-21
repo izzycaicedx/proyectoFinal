@@ -83,6 +83,12 @@ flowchart LR
 3. Al guardar, `playlists.js` escribe en `sessionStorage` (solo en la pestaña actual).
 4. `/ver-playlist` renderiza la vista; el listado se construye en el cliente con `app.js`.
 
+## Documentación del código
+
+Guía para desarrolladores con módulos, eventos y flujos: [docs/CODIGO.md](docs/CODIGO.md).
+
+Los archivos JavaScript incluyen comentarios **JSDoc** (`server.js`, `public/*.js`).
+
 ## Estructura del proyecto
 
 ```
@@ -106,6 +112,8 @@ proyectoFinal/
 │       ├── global-player.ejs # Barra inferior fija
 │       ├── playlist-modal.ejs
 │       └── layout-end.ejs    # Scripts y componentes globales
+├── docs/
+│   └── CODIGO.md             # Guía de módulos y convenciones
 └── data/                     # Legado (playlists.db — ya no usado por el servidor)
 ```
 
