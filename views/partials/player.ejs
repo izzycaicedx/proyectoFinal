@@ -1,3 +1,4 @@
+<%# Mini reproductor espejo; el audio real está en global-player.ejs %>
 <% if (typeof previewSrc !== 'undefined' && previewSrc && typeof trackJson !== 'undefined') { %>
 <div class="custom-player custom-player--<%= typeof variant !== 'undefined' ? variant : 'card' %>" data-player data-track="<%= trackJson %>">
     <div class="player-bar">

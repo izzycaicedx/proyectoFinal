@@ -31,6 +31,7 @@
                 <% } else { %>
                     <div class="card-container">
                         <% canciones.forEach(cancion => { %>
+                            <%# Metadatos Deezer → data-track para GlobalPlayer y PlaylistStore %>
                             <%
                             const trackObj = {
                                 id: cancion.id,

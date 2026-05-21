@@ -1,3 +1,7 @@
+<%#
+  Componentes globales y scripts (orden de carga obligatorio).
+  Requiere: activeNav ('home' | 'playlist') para mobile-nav.
+%>
 <%- include('mobile-nav', { activeNav: typeof activeNav !== 'undefined' ? activeNav : 'home' }) %>
 <%- include('global-player') %>
 <%- include('playlist-modal') %>
