@@ -44,4 +44,15 @@ app.get('/ver-playlist', async (req, res) => {
     res.render('mi-playlist', { cancionesGuardadas: docs });
 });
 
+app.post('/borrar', async (req, res) => {
+    try {
+        // Usamos el ID que viene del formulario para borrar el registro exacto
+        await db.remove({ _id: req.body.id });
+        res.redirect('/ver-playlist'); // Recarga la página después de borrar
+    } catch (e) {
+        console.error("Error al borrar:", e);
+        res.status(500).send("No se pudo borrar la canción.");
+    }
+});
+
 app.listen(3000, () => console.log('Servidor corriendo en http://localhost:3000'));

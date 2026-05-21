@@ -1,15 +1,28 @@
 <!DOCTYPE html>
-<html>
-<head><link rel="stylesheet" href="/style.css"></head>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/style.css">
+    <title>Mi Playlist</title>
+</head>
 <body>
-    <div class="container">
-        <h1>Mi Playlist Favorita</h1>
-        <ul>
-            <% cancionesGuardadas.forEach(c => { %>
-                <li class="song-card"><strong><%= c.titulo %></strong> - <%= c.artista %></li>
-            <% }) %>
-        </ul>
-        <a href="/" class="btn-back">← Volver</a>
+    <h1>Mis Canciones Favoritas</h1>
+    
+    <div class="card-container">
+        <% cancionesGuardadas.forEach(cancion => { %>
+            <div class="song-card">
+                <h3><%= cancion.titulo %></h3>
+                <p><%= cancion.artista %></p>
+                
+                <form action="/borrar" method="POST">
+                    <input type="hidden" name="id" value="<%= cancion._id %>">
+                    <button type="submit" >Eliminar </button>
+                </form>
+            </div>
+        <% }) %>
     </div>
+    
+    <br>
+    <a href="/">Volver a buscar</a>
 </body>
 </html>
