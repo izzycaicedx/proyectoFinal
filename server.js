@@ -30,10 +30,12 @@ app.get('/buscar', async (req, res) => {
 
 app.post('/guardar', async (req, res) => {
     try {
+        console.log("Intentando guardar:", req.body); // Esto te ayudará a ver qué está pasando en la terminal
         await db.insert({ titulo: req.body.titulo, artista: req.body.artista });
         res.send("<h1>¡Guardado!</h1><a href='/ver-playlist'>Ver mi playlist</a> | <a href='/'>Volver</a>");
     } catch (e) {
-        res.send("Error al guardar en la base de datos.");
+        console.error("Error al guardar:", e); // Esto te dirá el error real en la terminal
+        res.status(500).send("Error al guardar en la base de datos.");
     }
 });
 
