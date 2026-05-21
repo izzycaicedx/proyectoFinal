@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head><link rel="stylesheet" href="/style.css"></head>
+<body>
+    <div class="container">
+        <h1>Mi Playlist Favorita</h1>
+        <ul>
+            <% cancionesGuardadas.forEach(c => { %>
+                <li class="song-card"><strong><%= c.titulo %></strong> - <%= c.artista %></li>
+            <% }) %>
+        </ul>
+        <a href="/" class="btn-back">← Volver</a>
+    </div>
+</body>
+</html>
