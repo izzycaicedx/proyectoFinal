@@ -1,0 +1,16 @@
+<div class="grid">
+    <% canciones.forEach(c => { %>
+        <div class="song-card">
+            <img src="<%= c.album.cover_medium %>">
+            <h3><%= c.title %></h3>
+            <p><%= c.artist.name %></p>
+            <audio controls><source src="<%= c.preview %>" type="audio/mpeg"></audio>
+            
+            <form action="/guardar" method="POST">
+                <input type="hidden" name="titulo" value="<%= c.title %>">
+                <input type="hidden" name="artista" value="<%= c.artist.name %>">
+                <button type="submit">Guardar</button>
+            </form>
+        </div>
+    <% }) %>
+</div>
