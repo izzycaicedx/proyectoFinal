@@ -1,0 +1,10 @@
+<nav class="mobile-bottom-nav" aria-label="Navegación principal">
+    <a href="/" class="mobile-nav-link<%= typeof activeNav === 'undefined' || activeNav === 'home' ? ' is-active' : '' %>">
+        <span class="mobile-nav-icon" aria-hidden="true">⌂</span>
+        <span>Inicio</span>
+    </a>
+    <a href="/ver-playlist" class="mobile-nav-link<%= typeof activeNav !== 'undefined' && activeNav === 'playlist' ? ' is-active' : '' %>">
+        <span class="mobile-nav-icon" aria-hidden="true">♥</span>
+        <span>Playlists</span>
+    </a>
+</nav>
