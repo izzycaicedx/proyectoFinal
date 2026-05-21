@@ -397,7 +397,7 @@
             "</button>" +
             '<div class="player-main"><div class="player-progress">' +
             '<div class="player-progress-track"><div class="player-progress-fill"></div></div>' +
-            '<input type="range" class="player-seek" min="0" max="100" value="0" disabled></div>' +
+            '<input type="range" class="player-seek" min="0" max="100" value="0" step="0.1"></div>' +
             '<div class="player-meta"><span class="player-time player-time--current">0:00</span>' +
             '<span class="player-time-sep">/</span>' +
             '<span class="player-time player-time--duration">' +
@@ -449,7 +449,8 @@
       });
     });
 
-    GlobalPlayer.syncInlinePlayers();
+    window.dispatchEvent(new CustomEvent("moodtunes:dom-updated"));
+    GlobalPlayer.initInlinePlayers();
   }
 
   PlaylistModal.init();
@@ -461,6 +462,7 @@
     buildPlaylistSelect();
     renderPlaylistsPage();
     initSaveButtons();
+    window.dispatchEvent(new CustomEvent("moodtunes:dom-updated"));
   });
 
   renderPlaylistsPage();
