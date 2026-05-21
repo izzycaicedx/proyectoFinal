@@ -1,0 +1,21 @@
+<div class="card-container">
+    <% canciones.forEach(cancion => { %>
+        <div class="song-card">
+            <img src="<%= cancion.album.cover_medium %>" alt="Portada" style="width: 100%; border-radius: 8px;">
+            
+            <h3><%= cancion.title %></h3>
+            <p>Artista: <%= cancion.artist.name %></p>
+            
+            <audio controls style="width: 100%; margin: 10px 0;">
+                <source src="<%= cancion.preview %>" type="audio/mpeg">
+                Tu navegador no soporta el elemento de audio.
+            </audio>
+
+            <form action="/guardar" method="POST">
+                <input type="hidden" name="titulo" value="<%= cancion.title %>">
+                <input type="hidden" name="artista" value="<%= cancion.artist.name %>">
+                <button type="submit">Guardar</button>
+            </form>
+        </div>
+    <% }) %>
+</div>
