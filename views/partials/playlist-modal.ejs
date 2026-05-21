@@ -1,0 +1,45 @@
+<div id="playlist-modal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="modal-title" aria-modal="true">
+    <div class="modal-backdrop" data-close-modal></div>
+    <div class="modal-dialog">
+        <button type="button" class="modal-close" data-close-modal aria-label="Cerrar">✕</button>
+        <div class="modal-header">
+            <span class="modal-icon" id="modal-emoji-preview">🎵</span>
+            <h2 id="modal-title">Nueva playlist</h2>
+            <p class="modal-subtitle">Dale nombre, emoji y una descripción</p>
+        </div>
+        <form id="playlist-form" class="modal-form" novalidate>
+            <fieldset class="form-group">
+                <legend class="form-label">Elige un emoji</legend>
+                <div class="emoji-grid" id="emoji-grid">
+                    <button type="button" class="emoji-opt is-selected" data-emoji="🎵" aria-label="Nota musical">🎵</button>
+                    <button type="button" class="emoji-opt" data-emoji="🔥" aria-label="Fuego">🔥</button>
+                    <button type="button" class="emoji-opt" data-emoji="😊" aria-label="Feliz">😊</button>
+                    <button type="button" class="emoji-opt" data-emoji="💜" aria-label="Morado">💜</button>
+                    <button type="button" class="emoji-opt" data-emoji="🌙" aria-label="Luna">🌙</button>
+                    <button type="button" class="emoji-opt" data-emoji="⚡" aria-label="Rayo">⚡</button>
+                    <button type="button" class="emoji-opt" data-emoji="🎸" aria-label="Guitarra">🎸</button>
+                    <button type="button" class="emoji-opt" data-emoji="💿" aria-label="Disco">💿</button>
+                    <button type="button" class="emoji-opt" data-emoji="🎧" aria-label="Audífonos">🎧</button>
+                    <button type="button" class="emoji-opt" data-emoji="✨" aria-label="Brillos">✨</button>
+                    <button type="button" class="emoji-opt" data-emoji="🌴" aria-label="Palmera">🌴</button>
+                    <button type="button" class="emoji-opt" data-emoji="❤️" aria-label="Corazón">❤️</button>
+                </div>
+                <label class="form-label" for="playlist-emoji-input">O escribe tu emoji</label>
+                <input type="text" id="playlist-emoji-input" name="emoji" class="form-input form-input-emoji" maxlength="4" placeholder="Ej: 🎶" value="🎵" autocomplete="off">
+            </fieldset>
+            <div class="form-group">
+                <label class="form-label" for="playlist-name">Nombre <span class="required">*</span></label>
+                <input type="text" id="playlist-name" name="name" class="form-input" required maxlength="60" placeholder="Mi playlist de verano">
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="playlist-description">Descripción</label>
+                <textarea id="playlist-description" name="description" class="form-input form-textarea" maxlength="200" rows="3" placeholder="Música para estudiar, viajar, fiesta…"></textarea>
+                <span class="form-hint"><span id="desc-count">0</span>/200</span>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" data-close-modal>Cancelar</button>
+                <button type="submit" class="btn btn-primary">Crear playlist</button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,21 +1,96 @@
-<div class="card-container">
-    <% canciones.forEach(cancion => { %>
-        <div class="song-card">
-            <img src="<%= cancion.album.cover_medium %>" alt="Portada" style="width: 100%; border-radius: 8px;">
-            
-            <h3><%= cancion.title %></h3>
-            <p>Artista: <%= cancion.artist.name %></p>
-            
-            <audio controls style="width: 100%; margin: 10px 0;">
-                <source src="<%= cancion.preview %>" type="audio/mpeg">
-                Tu navegador no soporta el elemento de audio.
-            </audio>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <%- include('partials/head', { pageTitle: 'Resultados' }) %>
+</head>
+<body>
+    <div class="app-shell">
+        <%- include('partials/nav', { activeNav: 'home' }) %>
+        <div class="main-content">
+            <header class="top-bar">
+                <button type="button" class="mobile-nav-btn" aria-label="Menú">☰</button>
+                <a href="/ver-playlist" class="btn btn-secondary btn-sm">Mis playlists</a>
+            </header>
+            <main class="page-body">
+                <div class="page-header">
+                    <h1>Resultados</h1>
+                    <% if (typeof mood !== 'undefined' && mood) { %>
+                        <span class="mood-tag">🎧 Buscando: <%= mood %></span>
+                    <% } %>
+                    <p class="results-count"><%= canciones.length %> canción<%= canciones.length !== 1 ? 'es' : '' %> encontrada<%= canciones.length !== 1 ? 's' : '' %></p>
+                    <div id="save-playlist-picker" class="save-playlist-picker"></div>
+                </div>
 
-            <form action="/guardar" method="POST">
-                <input type="hidden" name="titulo" value="<%= cancion.title %>">
-                <input type="hidden" name="artista" value="<%= cancion.artist.name %>">
-                <button type="submit">Guardar</button>
-            </form>
+                <% if (canciones.length === 0) { %>
+                    <div class="empty-state">
+                        <div class="empty-icon">🎵</div>
+                        <h2>Sin resultados</h2>
+                        <p>Prueba con otro término o un mood distinto.</p>
+                        <a href="/" class="btn btn-primary">Nueva búsqueda</a>
+                    </div>
+                <% } else { %>
+                    <div class="card-container">
+                        <% canciones.forEach(cancion => { %>
+                            <%
+                            const trackObj = {
+                                id: cancion.id,
+                                title: cancion.title,
+                                artist: cancion.artist.name,
+                                artistId: cancion.artist.id,
+                                album: cancion.album ? cancion.album.title : '',
+                                cover: cancion.album ? cancion.album.cover_medium : '',
+                                preview: cancion.preview || '',
+                                duration: cancion.duration || 0,
+                                link: cancion.link || ''
+                            };
+                            const trackJson = encodeURIComponent(JSON.stringify(trackObj));
+                            %>
+                            <article class="song-card" data-track="<%= trackJson %>">
+                                <div class="album-art-wrap">
+                                    <img
+                                        src="<%= cancion.album.cover_medium %>"
+                                        alt="Portada de <%= cancion.album.title %>"
+                                        loading="lazy"
+                                        width="250"
+                                        height="250"
+                                    >
+                                    <% if (cancion.preview) { %>
+                                        <button type="button" class="art-play-overlay" aria-label="Reproducir preview">
+                                            <span class="art-play-ring"></span>
+                                            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                                <path d="M8 5v14l11-7z"/>
+                                            </svg>
+                                        </button>
+                                        <div class="art-eq" aria-hidden="true">
+                                            <span></span><span></span><span></span><span></span>
+                                        </div>
+                                    <% } %>
+                                </div>
+                                <h3 title="<%= cancion.title %>"><%= cancion.title %></h3>
+                                <p class="artist"><%= cancion.artist.name %></p>
+                                <% if (cancion.album && cancion.album.title) { %>
+                                    <p class="album-name"><%= cancion.album.title %></p>
+                                <% } %>
+                                <% if (cancion.preview) { %>
+                                    <%- include('partials/player', { previewSrc: cancion.preview, trackJson, variant: 'card' }) %>
+                                <% } %>
+                                <div class="card-actions">
+                                    <button type="button" class="btn btn-secondary btn-sm btn-save" data-track="<%= trackJson %>">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                                        <span class="btn-save-label">Guardar</span>
+                                    </button>
+                                </div>
+                            </article>
+                        <% }) %>
+                    </div>
+                <% } %>
+
+                <p style="margin-top: 2rem;">
+                    <a href="/" class="btn btn-secondary">← Nueva búsqueda</a>
+                </p>
+            </main>
         </div>
-    <% }) %>
-</div>
+    </div>
+    <%- include('partials/layout-end') %>
+</body>
+</html>
