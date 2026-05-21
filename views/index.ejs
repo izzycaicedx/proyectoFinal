@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-<html>
-<head><link rel="stylesheet" href="/style.css"><title>Musica top</title></head>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>MoodTunes</title>
+</head>
 <body>
-    <div class="container">
-        <h1>¡Bienvenido a Musica top!</h1>
-        <form action="/buscar" method="GET">
-            <input type="text" name="cancion" placeholder="Buscar canción/artista..." required>
-            <button type="submit">Generar Playlist</button>
-        </form>
-    </div>
+    <h1>MoodTunes</h1>
+    <form action="/buscar" method="GET">
+        <input type="text" name="mood" placeholder="Buscar artista o canción..." required>
+        <button type="submit">Buscar</button>
+    </form>
 </body>
 </html>
